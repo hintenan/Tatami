@@ -6,13 +6,13 @@
 #include "swinhoii.h"
 
 int main() {
-    int not_exit_function = 1;
+    int _exit_function_ = 0;
     char command_text[256] = {};
     char tmpchar[1];
     int index_of_command_text = 0;
 
     // print a promtp
-    while (not_exit_function) {
+    while (!_exit_function_) {
         //memset(command_text,0,sizeof(command_text));
         printf(PROMPT);
         // read all stdin
