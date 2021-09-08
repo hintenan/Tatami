@@ -6,7 +6,7 @@
 // first read command line into simple codeable dialect
 int syntax_check (int signal_code, char* comtext) {
     // char segmentation
-    char variable_text[VARIABLE_LEN] = {};
+    char variable_text[VARIABLE_LEN];
     // char punct_text[1] = {};
     int index_of_variable_text = 0;
     int index_of_comtext = 0;
@@ -35,6 +35,7 @@ int syntax_check (int signal_code, char* comtext) {
     // bracket check
     struct Node* bracket_ptr = NULL;
     struct Node** bracket_ptoptr = &bracket_ptr;
+    int assignment = 0;
     
 
         // Command text segmentation
@@ -76,6 +77,36 @@ int syntax_check (int signal_code, char* comtext) {
             // write
             variable_text[index_of_variable_text] = comtext[index_of_comtext];
             index_of_variable_text += 1;
+        } else if (comtext[index_of_comtext] == '=') {
+            // asignment
+            // processing "var = x" only by now
+            // int only by now
+            if (is_operant == 3) {
+                is_operant = 1;
+                ;
+            } else {
+                syntax_error_signal = 12;
+                break;
+            }
+            // write
+            assignment += 1;
+            if (index_of_variable_text > 0) {
+                variable_text[index_of_variable_text + 1] = '\0';
+                end = add_end_of_Node_Variable(variable_text, ptoptr, end);
+                index_of_variable_text = 0;
+                memset(variable_text, '\0', VARIABLE_LEN);
+            }
+            variable_text[0] = comtext[index_of_comtext];
+            variable_text[1] = '\0';
+            end = add_end_of_Node_Variable(variable_text, ptoptr, end);
+            index_of_variable_text = 0;
+            memset(variable_text, '\0', VARIABLE_LEN);
+            // add '('
+            variable_text[0] = '(';
+            variable_text[1] = '\0';
+            end = add_end_of_Node_Variable(variable_text, ptoptr, end);
+            index_of_variable_text = 0;
+            memset(variable_text, '\0', VARIABLE_LEN);
         } else if (comtext[index_of_comtext] == '(') {
             // Close bracket check
             if (close_bracket_check(comtext[index_of_comtext], bracket_ptoptr)) {
@@ -88,15 +119,17 @@ int syntax_check (int signal_code, char* comtext) {
             // (a)
             if (is_operant == -1) {
                 variable_text[index_of_variable_text] = comtext[index_of_comtext];
+                variable_text[index_of_variable_text + 1] = '\0';
                 end = add_end_of_Node_Variable(variable_text, ptoptr, end);
                 index_of_variable_text = 0;
-                memset(variable_text, 0, VARIABLE_LEN);
+                memset(variable_text, '\0', VARIABLE_LEN);
             } else if (is_operant == 0) {
                 // legal: a + (a)
                 variable_text[index_of_variable_text] = comtext[index_of_comtext];
                 end = add_end_of_Node_Variable(variable_text, ptoptr, end);
+                variable_text[index_of_variable_text + 1] = '\0';
                 index_of_variable_text = 0;
-                memset(variable_text, 0, VARIABLE_LEN);
+                memset(variable_text, '\0', VARIABLE_LEN);
             } else if (is_operant == 2) {
                 // illegal: 1 (a)
                 syntax_error_signal = 7;
@@ -111,14 +144,16 @@ int syntax_check (int signal_code, char* comtext) {
 
                 // write
                 if (index_of_variable_text > 0) {
+                    variable_text[index_of_variable_text + 1] = '\0';
                     end = add_end_of_Node_Variable(variable_text, ptoptr, end);
                     index_of_variable_text = 0;
-                    memset(variable_text, 0, VARIABLE_LEN);
+                    memset(variable_text, '\0', VARIABLE_LEN);
                 }
                 variable_text[0] = comtext[index_of_comtext];
+                variable_text[1] = '\0';
                 end = add_end_of_Node_Variable(variable_text, ptoptr, end);
                 index_of_variable_text = 0;
-                memset(variable_text, 0, VARIABLE_LEN);
+                memset(variable_text, '\0', VARIABLE_LEN);
             }
         } else if (comtext[index_of_comtext] == ')') {
             if (close_bracket_check(comtext[index_of_comtext], bracket_ptoptr)) {
@@ -141,14 +176,16 @@ int syntax_check (int signal_code, char* comtext) {
                 // is digit: (1) 
                 // is alphabet: (a)
                 if (index_of_variable_text > 0) {
+                    variable_text[index_of_variable_text + 1] = '\0';
                     end = add_end_of_Node_Variable(variable_text, ptoptr, end);
                     index_of_variable_text = 0;
-                    memset(variable_text, 0, VARIABLE_LEN);
+                    memset(variable_text, '\0', VARIABLE_LEN);
                 }
                 variable_text[0] = comtext[index_of_comtext];
+                variable_text[1] = '\0';
                 end = add_end_of_Node_Variable(variable_text, ptoptr, end);
                 index_of_variable_text = 0;
-                memset(variable_text, 0, VARIABLE_LEN);
+                memset(variable_text, '\0', VARIABLE_LEN);
             }
         } else if (ispunct(comtext[index_of_comtext]) > 0) {
             // Arithmetic
@@ -167,21 +204,24 @@ int syntax_check (int signal_code, char* comtext) {
 
             // write previous
             if (index_of_variable_text > 0) {
+                variable_text[index_of_variable_text + 1] = '\0';
                 end = add_end_of_Node_Variable(variable_text, ptoptr, end);
                 index_of_variable_text = 0;
-                memset(variable_text, 0, VARIABLE_LEN);
+                memset(variable_text, '\0', VARIABLE_LEN);
             }
             // write punct
             is_operant = 0;
             variable_text[0] = comtext[index_of_comtext];
+            variable_text[1] = '\0';
             end = add_end_of_Node_Variable(variable_text, ptoptr, end);
             index_of_variable_text = 0;
-            memset(variable_text, 0, VARIABLE_LEN);
+            memset(variable_text, '\0', VARIABLE_LEN);
         } else if (comtext[index_of_comtext] == ' ') {
             if (index_of_variable_text > 0) {
+                variable_text[index_of_variable_text + 1] = '\0';
                 end = add_end_of_Node_Variable(variable_text, ptoptr, end);
                 index_of_variable_text = 0;
-                memset(variable_text, 0, VARIABLE_LEN);
+                memset(variable_text, '\0', VARIABLE_LEN);
             }
 
         } else if (comtext[index_of_comtext] == '\n') {
@@ -191,13 +231,24 @@ int syntax_check (int signal_code, char* comtext) {
             }
             // save last
             if (index_of_variable_text) {
+                variable_text[index_of_variable_text + 1] = '\0';
                 end = add_end_of_Node_Variable(variable_text, ptoptr, end);
                 index_of_variable_text = 0;
-                memset(variable_text, 0, VARIABLE_LEN);
+                memset(variable_text, '\0', VARIABLE_LEN);
             }
             break;
         } // end if isdifit / isalpha
     } //end of for
+    if (assignment) {
+        while (assignment) {
+            variable_text[0] = ')';
+            variable_text[1] = '\0';
+            end = add_end_of_Node_Variable(variable_text, ptoptr, end);
+            index_of_variable_text = 0;
+            memset(variable_text, '\0', VARIABLE_LEN);
+            assignment -= 1;
+        }
+    }
     
     // Not empty bracket
     if (bracket_ptr != NULL) {
@@ -226,6 +277,20 @@ int syntax_check (int signal_code, char* comtext) {
     return 1;
 }
 
+void formated_char_print(char* text_ptr) {
+    int iter = 0;
+    printf("\n|");
+    for (iter = 0; iter < VARIABLE_LEN; iter++) {
+        if (text_ptr[iter] == '\0') {
+            printf("\'\\0\'|");
+        } else {
+            printf("\'%c\'|", text_ptr[iter]);
+        }
+    }
+    printf("\n");
+}
+
+
 // close_bracket_check
 int close_bracket_check(char text, struct Node** head_ptoptr) {
     if (text == '(') {
@@ -237,7 +302,6 @@ int close_bracket_check(char text, struct Node** head_ptoptr) {
     }
 
     return 0;
-
 }
 
 void identify_punct() {
@@ -254,84 +318,97 @@ void identify_punct() {
     printf("\n");
 }
 
-void in_to_postfix(struct Node_Variable** pptr) {
+void in_to_postfix(struct Node_Variable** ptoptr) {
     // Known issue: Can not handle negative or positive sign
 
+    // ptoptr: segmented dialect
+
+    // postfix Node
     struct Node_Variable* head_ptr = NULL;
-    struct Node_Variable** head_pptr = &head_ptr;
-    struct Node_Variable* end = NULL;
+    struct Node_Variable** head_ptoptr = &head_ptr;
+    struct Node_Variable* end_ptr = NULL;
+    struct Node_Variable** end_ptoptr = &end_ptr;
     
     struct Node_Variable* stack_ptr = NULL;
-    struct Node_Variable** stack_pptr = &stack_ptr;
+    struct Node_Variable** stack_ptoptr = &stack_ptr;
 
-    char variable[VARIABLE_LEN] = {};
-    int rank = 0;
-    int old_rank = 0;
-    char operator[VARIABLE_LEN] = {};
+    int bracket_rank = 0;
+    struct Node* op_ptr = NULL;
+    struct Node** op_ptoptr = &op_ptr;
+
+    int operator_rank = 0;
+
+    struct Node_Variable* tmp_Node = *ptoptr;
     
-
-    while (*pptr != NULL) {
-        strcpy(variable, top_Node_Variable(pptr));
-        if (isdigit(variable[0]) > 0) {
-            end = add_end_of_Node_Variable(variable, head_pptr, end);
-        } else if (variable[0] == '(') {
-            old_rank = rank;
-            rank = 0;
-            add_Node_Variable(variable, stack_pptr);
-        } else if (variable[0] == ')') {
+    while (*ptoptr != NULL) {
+        tmp_Node = *ptoptr;
+        if (isdigit(tmp_Node->variable[0]) > 0) {
+            move_end_of_Node_Variable(ptoptr, head_ptoptr, end_ptoptr); 
+        } else if (isalpha(tmp_Node->variable[0]) > 0) {
+            move_end_of_Node_Variable(ptoptr, head_ptoptr, end_ptoptr); 
+        } else if (tmp_Node->variable[0] == '(') {
+            bracket_rank += 1;
+            add_Node(operator_rank, op_ptoptr);
+            operator_rank = 0;
+            move_Node_Variable(ptoptr, stack_ptoptr);
+        } else if (tmp_Node->variable[0] == ')') {
+            bracket_rank -= 1;
+            top_Node_Variable(ptoptr);
             while (stack_ptr->variable[0] != '(') {
-                strcpy(operator, top_Node_Variable(stack_pptr));
-                end = add_end_of_Node_Variable(operator, head_pptr, end);
+                move_end_of_Node_Variable(stack_ptoptr, head_ptoptr, end_ptoptr);
             }
-            top_Node_Variable(stack_pptr);
-            rank = old_rank;
-
-
-        } else {
-            if ((variable[0] == '+') || (variable[0] == '-')) {
-                if (rank == 0) {
-                    add_Node_Variable(variable, stack_pptr);
-                    rank = 1;
-                } else if (rank == 1) {
-                    strcpy(operator, top_Node_Variable(stack_pptr));
-                    end = add_end_of_Node_Variable(operator, head_pptr, end);
-                    
-                    add_Node_Variable(variable, stack_pptr);
-                } else if (rank == 2) {
-                    while ((*stack_pptr != NULL) && (stack_ptr->variable[0] != '(')) {
-                        strcpy(operator, top_Node_Variable(stack_pptr));
-                        end = add_end_of_Node_Variable(operator, head_pptr, end);
+            top_Node_Variable(stack_ptoptr);
+            operator_rank = top_Node(op_ptoptr);
+        } else { // operators
+            if ((tmp_Node->variable[0] == '+') || (tmp_Node->variable[0] == '-')) {
+                if (operator_rank == 0) {
+                    move_Node_Variable(ptoptr, stack_ptoptr);
+                    operator_rank = 1;
+                } else if (operator_rank == 1) {
+                    move_end_of_Node_Variable(stack_ptoptr, head_ptoptr, end_ptoptr);
+                    move_Node_Variable(ptoptr, stack_ptoptr);
+                } else if (operator_rank == 2) {
+                    while ((*stack_ptoptr != NULL) && (stack_ptr->variable[0] != '(')) {
+                        move_end_of_Node_Variable(stack_ptoptr, head_ptoptr, end_ptoptr);
                     }
-
-                    add_Node_Variable(variable, stack_pptr);
-                    rank = 1;
+                    move_Node_Variable(ptoptr, stack_ptoptr);
+                    operator_rank = 1;
+                }
+            } else if ((tmp_Node->variable[0] == '*') || (tmp_Node->variable[0] == '/')) {
+                if (operator_rank == 2) {
+                    move_end_of_Node_Variable(stack_ptoptr, head_ptoptr, end_ptoptr);
+                    move_Node_Variable(ptoptr, stack_ptoptr);
+                } else {
+                    move_Node_Variable(ptoptr, stack_ptoptr);
+                    operator_rank = 2;
                 }
 
-
-            } else if ((variable[0] == '*') || (variable[0] == '/')) {
-                add_Node_Variable(variable, stack_pptr);
-                rank = 2;
+            } else if (tmp_Node->variable[0] == '=') {
+                    move_Node_Variable(ptoptr, stack_ptoptr);
             }
         }
+    } // while
+
+    while (*stack_ptoptr != NULL) {
+        move_end_of_Node_Variable(stack_ptoptr, head_ptoptr, end_ptoptr);
     }
-    while (*stack_pptr != NULL) {
-        strcpy(operator, top_Node_Variable(stack_pptr));
-        end = add_end_of_Node_Variable(operator, head_pptr, end);
+    while (*stack_ptoptr != NULL) {
+        printf("Op rank remaining.");
     }
-    
+
     printf("Postfix dialect: ");
-    print_Node_Variable(head_pptr);
+    print_Node_Variable(head_ptoptr);
     printf("\n");
-    *pptr = *head_pptr;
+    *ptoptr = *head_ptoptr;
 
 }
 
 void evaluate_postfix(struct Node_Variable** ptr) {
     struct Node_Variable* tmp_Node = *ptr;
-    
     struct Node* post = NULL;
     struct Node** post_ptr = &post;
 
+    int assignment = 0;
 //    struct Node_Variable* Node1 = NULL;
 //    struct Node_Variable* Node2 = NULL;
     int a1 = 0;
@@ -339,7 +416,9 @@ void evaluate_postfix(struct Node_Variable** ptr) {
     int results = 0;
 
     while (tmp_Node != NULL) {
-        if (isdigit(tmp_Node->variable[0]) > 0) {
+        if (isalpha(tmp_Node->variable[0]) > 0) {
+            assignment = 1;
+        } else if (isdigit(tmp_Node->variable[0]) > 0) {
             add_Node(atoi(tmp_Node->variable), post_ptr);
             
         } else if (tmp_Node->variable[0] == '+') {
@@ -365,7 +444,28 @@ void evaluate_postfix(struct Node_Variable** ptr) {
         }
         tmp_Node = tmp_Node->next;
     }
-    print_Node(post_ptr);
+    if (assignment == 1) {
+        if (post == NULL) {
+            printf("No variable memory by now.\n");
+        } else {
+            char data[VARIABLE_LEN];
+            sprintf(data, "%d", post->data);
+            tmp_Node = *ptr;
+            strcpy(tmp_Node->data, data);
+            for (int i = 0; i < VARIABLE_LEN; i++) {
+                if (tmp_Node->variable[i] == '\0') break;
+                printf("%c", tmp_Node->variable[i]);
+            }
+            printf(" is ");
+            for (int i = 0; i < VARIABLE_LEN; i++) {
+                if (tmp_Node->data[i] == '\0') break;
+                printf("%c", tmp_Node->data[i]);
+            }
+            printf("\n");
+        }
+    } else {
+        print_Node(post_ptr);
+    }
     empty_Node(post_ptr);
 
 }

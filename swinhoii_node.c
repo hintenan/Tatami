@@ -16,21 +16,21 @@ void add_Node_Variable(char* x, struct Node_Variable** pptr) {
     struct Node_Variable* first_node = malloc(sizeof(struct Node_Variable));
     strcpy(first_node->variable, x);
     first_node->next = *pptr;
-    *pptr = first_node;
+    *pptr = first_node;    
 }
 
 struct Node_Variable* add_end_of_Node_Variable(char* x, struct Node_Variable** ptr, struct Node_Variable* endptr) {
     struct Node_Variable* last_node = malloc(sizeof(struct Node_Variable));
     strcpy(last_node->variable, x);
+    //formated_char_print(last_node->variable);
+    last_node->next = NULL;
     if (*ptr == NULL) {
-        last_node->next = *ptr;
         *ptr = last_node;
         endptr = last_node;
 
     } else {
         endptr->next = last_node;
         endptr = last_node;
-        endptr->next = NULL;
     }
     return endptr;
 }
@@ -52,16 +52,40 @@ char* top_Node_Variable(struct Node_Variable** headptr) {
     char text[VARIABLE_LEN] = {};
     char* p = text;
     if (tmp_node != NULL) {
-        strcpy(text, tmp_node->variable);
+        for (int i = 0; tmp_node->variable[i] == '\0'; i++) {
+            text[i] = tmp_node->variable[i];
+        }
         *headptr = tmp_node->next;
-        free(tmp_node);
-        tmp_node = tmp_node->next;
-        return p;
-    } else {
-        return NULL;
+        free(tmp_node);   
+    }
 
+    return p;
+}
+
+void move_end_of_Node_Variable(struct Node_Variable** ptoptr, struct Node_Variable** head_ptoptr, struct Node_Variable** end) {
+    struct Node_Variable* tmp_Node = *ptoptr;
+    struct Node_Variable* end_Node = *end;
+    *ptoptr = tmp_Node->next;
+    if (*head_ptoptr == NULL) {
+        *head_ptoptr = tmp_Node;    
+        *end = tmp_Node;
+        tmp_Node->next = NULL;
+    } else {
+        end_Node->next = tmp_Node;
+        *end = tmp_Node;
+        tmp_Node->next = NULL;
     }
 }
+void move_Node_Variable(struct Node_Variable** ptoptr, struct Node_Variable** head_ptoptr) {
+    struct Node_Variable* tmp_Node = *ptoptr;
+    *ptoptr = tmp_Node->next;
+    tmp_Node->next = *head_ptoptr;
+    *head_ptoptr = tmp_Node;    
+}
+
+
+    
+
 void reverse_Node_Varialbe(struct Node_Variable** ptr) {
     ;
 }
@@ -95,10 +119,9 @@ void print_Node_Variable(struct Node_Variable** ptr) {
     struct Node_Variable* tmp_Node = *ptr;
     int i = 0;
     while (tmp_Node != NULL) {
-        i = 0;
-        while (tmp_Node->variable[i] != '\0') {
+        //formated_char_print(tmp_Node->variable);
+        for (i = 0; tmp_Node->variable[i] != '\0'; i++) {
             printf("%c", tmp_Node->variable[i]);
-            i++;
         }
         printf(" ");
         tmp_Node = tmp_Node->next;

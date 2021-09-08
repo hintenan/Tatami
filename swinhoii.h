@@ -28,7 +28,7 @@ struct DNode {
 struct Node_Variable {
     char variable[VARIABLE_LEN];
     char dtype[20];
-    struct Node_Int* data;
+    char data[VARIABLE_LEN];
     struct Node_Variable* next;
 };
 struct DNode_Variable {
@@ -49,9 +49,6 @@ void Print_tmp(char *text);
 
 // Add Node
 void add_Node(int data, struct Node** head_ptoptr);
-
-
-
 void add_Node_Variable(char* x, struct Node_Variable** head_ptoptr);
 struct Node_Variable* add_end_of_Node_Variable(char* x, struct Node_Variable** head_ptoptr, struct Node_Variable* end_ptr);
 
@@ -61,6 +58,9 @@ struct Node_Variable* add_end_of_Node_Variable(char* x, struct Node_Variable** h
 int top_Node(struct Node** head_ptoptr);
 char* top_Node_Variable(struct Node_Variable** head_ptoptr);
 
+// move Node
+void move_Node_Variable(struct Node_Variable** ptoptr, struct Node_Variable** head);
+void move_end_of_Node_Variable(struct Node_Variable** ptoptr, struct Node_Variable** head, struct Node_Variable** end);
 // Reverse Node methods
 void reverse_Node_Varialbe(struct Node_Variable** head_ptoptr);
 
@@ -78,6 +78,7 @@ int close_bracket_check(char text, struct Node** head_ptoptr);
 
 // infix, prefix and postfix
 int syntax_check(int index, char* text);
+void formated_char_print(char* text);
 int alpha_check(int index, char* text);
 void identify_punct();
 void in_to_postfix(struct Node_Variable** head_ptoptr);
