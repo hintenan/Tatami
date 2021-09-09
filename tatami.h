@@ -83,9 +83,11 @@ int close_bracket_check(char text, struct Node** head_ptoptr);
 
 // infix, prefix and postfix
 int syntax_check(struct Node_Variable** cmd_ptoptr, char* text);
+int replace_variable_with_data(struct Node_Variable** data_ptoptr, struct Node_Variable** ptotpr);
+
 void formated_char_print(char* text);
 int alpha_check(int index, char* text);
 void identify_punct();
 void in_to_postfix(struct Node_Variable** head_ptoptr);
-void evaluate_postfix(struct Node_Variable** head_ptoptr);
+void evaluate_postfix(struct Node_Variable** data_ptoptr, struct Node_Variable** head_ptoptr);
 

@@ -49,12 +49,10 @@ int top_Node(struct Node** headptr) {
 
 char* top_Node_Variable(struct Node_Variable** headptr) {
     struct Node_Variable* tmp_node = *headptr;
-    char text[VARIABLE_LEN] = {};
+    char text[VARIABLE_LEN];
     char* p = text;
     if (tmp_node != NULL) {
-        for (int i = 0; tmp_node->variable[i] == '\0'; i++) {
-            text[i] = tmp_node->variable[i];
-        }
+        strcpy(text, tmp_node->variable);
         *headptr = tmp_node->next;
         free(tmp_node);   
     }
@@ -83,8 +81,6 @@ void move_Node_Variable(struct Node_Variable** ptoptr, struct Node_Variable** he
     *head_ptoptr = tmp_Node;    
 }
 
-
-    
 
 void reverse_Node_Varialbe(struct Node_Variable** ptr) {
     ;
@@ -128,6 +124,23 @@ void print_Node_Variable(struct Node_Variable** ptr) {
     }
 }
 
+void print_Variable_Data(struct Node_Variable** ptr) {
+    struct Node_Variable* tmp_Node = *ptr;
+    int i = 0;
+    while (tmp_Node != NULL) {
+        //formated_char_print(tmp_Node->variable);
+        for (i = 0; tmp_Node->variable[i] != '\0'; i++) {
+            printf("%c", tmp_Node->variable[i]);
+        }
+        printf(": ");
+        for (i = 0; tmp_Node->data[i] != '\0'; i++) {
+            printf("%c", tmp_Node->data[i]);
+        }
+        printf("\n");
+        tmp_Node = tmp_Node->next;
+    }
+}
+
 int bracket_check(char tmpchar, struct Node** ptr) {
 
     if (tmpchar == '('){
@@ -158,7 +171,10 @@ void Print_tmp(char *text) {
             if (text[i] == '\n') {
                 break;
             }
-            putchar(text[i]);
+            if (text[i] == '\0') {
+                break;
+            }
+            printf("%c", text[i]);
         }
         printf("\n");
 }

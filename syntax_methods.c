@@ -37,6 +37,7 @@ int syntax_check (struct Node_Variable** cmd_ptoptr, char* comtext) {
     struct Node* bracket_ptr = NULL;
     struct Node** bracket_ptoptr = &bracket_ptr;
     int assignment = 0;
+    int words_count = 0;
     
 
         // Command text segmentation
@@ -82,6 +83,10 @@ int syntax_check (struct Node_Variable** cmd_ptoptr, char* comtext) {
             // asignment
             // processing "var = x" only by now
             // int only by now
+            if (words_count > 1) {
+                syntax_error_signal = 13;
+                break;
+            }
             if (is_operant == 3) {
                 is_operant = 1;
                 ;
@@ -90,6 +95,7 @@ int syntax_check (struct Node_Variable** cmd_ptoptr, char* comtext) {
                 break;
             }
             // write
+            words_count = 0;
             assignment += 1;
             if (index_of_variable_text > 0) {
                 variable_text[index_of_variable_text + 1] = '\0';
@@ -219,6 +225,7 @@ int syntax_check (struct Node_Variable** cmd_ptoptr, char* comtext) {
             memset(variable_text, '\0', VARIABLE_LEN);
         } else if (comtext[index_of_comtext] == ' ') {
             if (index_of_variable_text > 0) {
+                words_count += 1;
                 variable_text[index_of_variable_text + 1] = '\0';
                 end = add_end_of_Node_Variable(variable_text, ptoptr, end);
                 index_of_variable_text = 0;
@@ -286,6 +293,49 @@ void formated_char_print(char* text_ptr) {
         }
     }
     printf("\n");
+}
+
+int replace_variable_with_data(struct Node_Variable** data_ptoptr, struct Node_Variable** ptoptr) {
+    struct Node_Variable* tmp_Node = *ptoptr;
+    struct Node_Variable* assign_Node = NULL;
+    struct Node_Variable* data_Node = *data_ptoptr;
+
+    while (tmp_Node != NULL) {
+        if (isalpha(tmp_Node->variable[0]) > 0) {
+            assign_Node = tmp_Node->next;
+            if (assign_Node != NULL) {
+                if (assign_Node->variable[0] == '=') break;
+            }
+            while (data_Node != NULL) {
+                if (strcmp(tmp_Node->variable, data_Node->variable) == 0) {
+                    // replace variable with data
+                    // function here
+                    strcpy(tmp_Node->variable, data_Node->data);
+                    break;
+                }
+                data_Node = data_Node->next;
+            }
+            if (data_Node != NULL) {
+                // variable found
+                // reset data_Node
+                data_Node = *data_ptoptr;
+            } else {
+                // print variable is not defined.
+                printf("Syntax error: name \'");
+                for (int i = 0; i < VARIABLE_LEN; i++) {
+                    //if (tmp_Node->variable[i] == '\0') break;
+                    printf("%c", tmp_Node->variable[i]);
+                }
+                printf("\' is not defined.\n");
+                return 0;
+            }
+        }
+        tmp_Node = tmp_Node->next;
+    }
+    printf("Variable replacement: ");
+    print_Node_Variable(ptoptr);
+    printf("\n");
+    return 1;
 }
 
 
@@ -357,8 +407,6 @@ void in_to_postfix(struct Node_Variable** ptoptr) {
             }
             top_Node_Variable(stack_ptoptr);
             operator_rank = top_Node(op_ptoptr);
-    struct Node_Variable* ptr = NULL;
-    struct Node_Variable** ptoptr = & ptr;
         } else { // operators
             if ((tmp_Node->variable[0] == '+') || (tmp_Node->variable[0] == '-')) {
                 if (operator_rank == 0) {
@@ -403,21 +451,23 @@ void in_to_postfix(struct Node_Variable** ptoptr) {
 
 }
 
-void evaluate_postfix(struct Node_Variable** ptr) {
+void evaluate_postfix(struct Node_Variable** data_ptr, struct Node_Variable** ptr) {
     struct Node_Variable* tmp_Node = *ptr;
+    struct Node_Variable* data_Node = *data_ptr;
     struct Node* post = NULL;
     struct Node** post_ptr = &post;
+    struct Node_Variable* assign_ptr = NULL;
+    struct Node_Variable** assign_ptoptr = &assign_ptr;
+    char variable[VARIABLE_LEN];
+    char *p = variable;
 
-    int assignment = 0;
-//    struct Node_Variable* Node1 = NULL;
-//    struct Node_Variable* Node2 = NULL;
     int a1 = 0;
     int a2 = 0;
     int results = 0;
-
+    
     while (tmp_Node != NULL) {
         if (isalpha(tmp_Node->variable[0]) > 0) {
-            assignment = 1;
+            add_Node_Variable(tmp_Node->variable, assign_ptoptr);
         } else if (isdigit(tmp_Node->variable[0]) > 0) {
             add_Node(atoi(tmp_Node->variable), post_ptr);
             
@@ -441,32 +491,21 @@ void evaluate_postfix(struct Node_Variable** ptr) {
             a1 = top_Node(post_ptr);
             results = a1 / a2;
             add_Node(results, post_ptr);
+        } else if (tmp_Node->variable[0] == '=') {
+            // call add_Variable_data()
+            assign_ptr = *assign_ptoptr;
+            add_Node_Variable(tmp_Node->variable, data_ptr);
+            data_Node = *data_ptr;
+            strcpy(data_Node->variable, assign_ptr->variable);
+            char data[VARIABLE_LEN];
+            sprintf(data, "%d", post->data);
+            strcpy(data_Node->data, data);
+            top_Node_Variable(assign_ptoptr);
         }
         tmp_Node = tmp_Node->next;
     }
-    if (assignment == 1) {
-        if (post == NULL) {
-            printf("No variable memory by now.\n");
-            //print_Variable_Data();
-        } else {
-            char data[VARIABLE_LEN];
-            sprintf(data, "%d", post->data);
-            tmp_Node = *ptr;
-            strcpy(tmp_Node->data, data);
-            for (int i = 0; i < VARIABLE_LEN; i++) {
-                if (tmp_Node->variable[i] == '\0') break;
-                printf("%c", tmp_Node->variable[i]);
-            }
-            printf(" is ");
-            for (int i = 0; i < VARIABLE_LEN; i++) {
-                if (tmp_Node->data[i] == '\0') break;
-                printf("%c", tmp_Node->data[i]);
-            }
-            printf("\n");
-        }
-    } else {
-        print_Node(post_ptr);
-    }
+    print_Node(post_ptr);
     empty_Node(post_ptr);
+    print_Variable_Data(data_ptr);
 
 }
