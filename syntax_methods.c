@@ -302,14 +302,19 @@ int replace_variable_with_data(struct Node_Variable** data_ptoptr, struct Node_V
 
     while (tmp_Node != NULL) {
         if (isalpha(tmp_Node->variable[0]) > 0) {
+            printf("This is a variable\n");
             assign_Node = tmp_Node->next;
             if (assign_Node != NULL) {
-                if (assign_Node->variable[0] == '=') break;
+                if (assign_Node->variable[0] == '=') {
+                    tmp_Node = tmp_Node->next;
+                    continue;
+                }
             }
             while (data_Node != NULL) {
                 if (strcmp(tmp_Node->variable, data_Node->variable) == 0) {
                     // replace variable with data
                     // function here
+                    printf("Varialbe found.\n");
                     strcpy(tmp_Node->variable, data_Node->data);
                     break;
                 }
@@ -459,7 +464,6 @@ void evaluate_postfix(struct Node_Variable** data_ptr, struct Node_Variable** pt
     struct Node_Variable* assign_ptr = NULL;
     struct Node_Variable** assign_ptoptr = &assign_ptr;
     char variable[VARIABLE_LEN];
-    char *p = variable;
 
     int a1 = 0;
     int a2 = 0;
@@ -493,14 +497,29 @@ void evaluate_postfix(struct Node_Variable** data_ptr, struct Node_Variable** pt
             add_Node(results, post_ptr);
         } else if (tmp_Node->variable[0] == '=') {
             // call add_Variable_data()
-            assign_ptr = *assign_ptoptr;
-            add_Node_Variable(tmp_Node->variable, data_ptr);
-            data_Node = *data_ptr;
-            strcpy(data_Node->variable, assign_ptr->variable);
+            // add or replace
             char data[VARIABLE_LEN];
             sprintf(data, "%d", post->data);
-            strcpy(data_Node->data, data);
-            top_Node_Variable(assign_ptoptr);
+            while(data_Node != NULL) {
+                if (strcmp(data_Node->variable, assign_ptr->variable) == 0) {
+                    // variable found;
+                    break;
+                }
+                data_Node = data_Node->next;
+            }
+            if (data_Node == NULL) {
+                // add
+                add_Node_Variable(tmp_Node->variable, data_ptr);
+                data_Node = *data_ptr;
+                strcpy(data_Node->variable, assign_ptr->variable);
+                strcpy(data_Node->data, data);
+                top_Node_Variable(assign_ptoptr);
+
+            } else {
+                // replacement
+                strcpy(data_Node->data, data);
+                top_Node_Variable(assign_ptoptr);
+            }
         }
         tmp_Node = tmp_Node->next;
     }
@@ -509,3 +528,5 @@ void evaluate_postfix(struct Node_Variable** data_ptr, struct Node_Variable** pt
     print_Variable_Data(data_ptr);
 
 }
+
+
