@@ -4,7 +4,8 @@
 
 // define syntax check method
 // first read command line into simple codeable dialect
-int syntax_check (int signal_code, char* comtext) {
+int syntax_check (struct Node_Variable** cmd_ptoptr, char* comtext) {
+
     // char segmentation
     char variable_text[VARIABLE_LEN];
     // char punct_text[1] = {};
@@ -270,10 +271,7 @@ int syntax_check (int signal_code, char* comtext) {
         printf("\n");
     }
 
-    in_to_postfix(ptoptr);
-    evaluate_postfix(ptoptr);
-    empty_Node_Variable(ptoptr);
-             
+    *cmd_ptoptr = *ptoptr;
     return 1;
 }
 
@@ -359,6 +357,8 @@ void in_to_postfix(struct Node_Variable** ptoptr) {
             }
             top_Node_Variable(stack_ptoptr);
             operator_rank = top_Node(op_ptoptr);
+    struct Node_Variable* ptr = NULL;
+    struct Node_Variable** ptoptr = & ptr;
         } else { // operators
             if ((tmp_Node->variable[0] == '+') || (tmp_Node->variable[0] == '-')) {
                 if (operator_rank == 0) {

@@ -48,6 +48,7 @@ struct DType_Node {
 };
 
 // Declaration
+int tatami_prompt();
 // Print method
 void Print_tmp(char *text); 
 
@@ -81,7 +82,7 @@ void print_Variable_Data(struct Node_Variable** Variable_ptoptr);
 int close_bracket_check(char text, struct Node** head_ptoptr);
 
 // infix, prefix and postfix
-int syntax_check(int index, char* text);
+int syntax_check(struct Node_Variable** cmd_ptoptr, char* text);
 void formated_char_print(char* text);
 int alpha_check(int index, char* text);
 void identify_punct();
