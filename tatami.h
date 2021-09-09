@@ -30,6 +30,7 @@ struct Node_Variable {
     char dtype[20];
     char data[VARIABLE_LEN];
     struct Node_Variable* next;
+    struct Dtype_Node* dtype_node;
 };
 struct DNode_Variable {
     char variable[VARIABLE_LEN];
@@ -38,9 +39,12 @@ struct DNode_Variable {
     struct Node_Char* prev;
     struct Node_Char* next;
 };
-struct Segment {
-    char var_seg[VARIABLE_LEN];
+
+struct DType_Node {
     int dtype;
+    int* intptr;
+    double* doubleptr;
+    char* charptr;
 };
 
 // Declaration
@@ -71,7 +75,7 @@ void empty_Node_Variable(struct Node_Variable** head_ptoptr);
 // Print Node Methods
 void print_Node(struct Node** head_ptoptr);
 void print_Node_Variable(struct Node_Variable** head_ptoptr);
-void print_Object(struct Segment* ptr);
+void print_Variable_Data(struct Node_Variable** Variable_ptoptr);
 
 // syntax check
 int close_bracket_check(char text, struct Node** head_ptoptr);

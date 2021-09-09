@@ -1,17 +1,17 @@
 CC = gcc
-EXE = swinhoii
-OBJECT = swinhoii.o swinhoii_node.o syntax_methods.o
+EXE = tatami
+OBJECT = tatami.o tatami_node.o syntax_methods.o
 CFLAGS = -Wall -O
 
-swinhoii: $(OBJECT)
+tatami: $(OBJECT)
 	$(CC) -o $(EXE) $(OBJECT)
-swinhoii.o: swinhoii.c
-	$(CC) $(CFLAGS) -c swinhoii.c
-swinhoii_node.o: swinhoii_node.c
-	$(CC) $(CFLAGS) -c swinhoii_node.c
+tatami.o: tatami.c
+	$(CC) $(CFLAGS) -c tatami.c
+tatami_node.o: tatami_node.c
+	$(CC) $(CFLAGS) -c tatami_node.c
 syntax_methods.o: syntax_methods.c
 	$(CC) $(CFLAGS) -c syntax_methods.c
 
 
 clean:
-	rm *.o swinhoii
+	rm *.o tatami

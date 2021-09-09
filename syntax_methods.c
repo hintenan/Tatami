@@ -1,5 +1,5 @@
 
-#include "swinhoii.h"
+#include "tatami.h"
 
 
 // define syntax check method
@@ -447,6 +447,7 @@ void evaluate_postfix(struct Node_Variable** ptr) {
     if (assignment == 1) {
         if (post == NULL) {
             printf("No variable memory by now.\n");
+            //print_Variable_Data();
         } else {
             char data[VARIABLE_LEN];
             sprintf(data, "%d", post->data);

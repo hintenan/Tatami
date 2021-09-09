@@ -3,7 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 
-# include "swinhoii.h"
+# include "tatami.h"
 
 void add_Node(int x, struct Node** pptr) {
     struct Node* first_node = malloc(sizeof(struct Node));
