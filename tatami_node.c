@@ -47,17 +47,22 @@ int top_Node(struct Node** headptr) {
     return data;
 }
 
-char* top_Node_Variable(struct Node_Variable** headptr) {
+char* top_Node_Variable(char* text, struct Node_Variable** headptr) {
     struct Node_Variable* tmp_node = *headptr;
-    char text[VARIABLE_LEN];
-    char* p = text;
     if (tmp_node != NULL) {
         strcpy(text, tmp_node->variable);
         *headptr = tmp_node->next;
         free(tmp_node);   
     }
 
-    return p;
+    return text;
+}
+void remove_Node_Variable(struct Node_Variable** headptr) {
+    struct Node_Variable* tmp_node = *headptr;
+    if (tmp_node != NULL) {
+        *headptr = tmp_node->next;
+        free(tmp_node);   
+    }
 }
 
 void move_end_of_Node_Variable(struct Node_Variable** ptoptr, struct Node_Variable** head_ptoptr, struct Node_Variable** end) {

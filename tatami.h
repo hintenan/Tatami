@@ -27,10 +27,10 @@ struct DNode {
 };
 struct Node_Variable {
     char variable[VARIABLE_LEN];
-    char dtype[20];
+    int dtype;
     char data[VARIABLE_LEN];
     struct Node_Variable* next;
-    struct Dtype_Node* dtype_node;
+    struct DType_Node* dtype_node;
 };
 struct DNode_Variable {
     char variable[VARIABLE_LEN];
@@ -58,10 +58,11 @@ void add_Node_Variable(char* x, struct Node_Variable** head_ptoptr);
 struct Node_Variable* add_end_of_Node_Variable(char* x, struct Node_Variable** head_ptoptr, struct Node_Variable* end_ptr);
 
 //Delete Node
+void remove_Node_Variable(struct Node_Variable** ptoptr);
 
 //Top Node
 int top_Node(struct Node** head_ptoptr);
-char* top_Node_Variable(struct Node_Variable** head_ptoptr);
+char* top_Node_Variable(char* text, struct Node_Variable** head_ptoptr);
 
 // move Node
 void move_Node_Variable(struct Node_Variable** ptoptr, struct Node_Variable** head);
