@@ -20,6 +20,23 @@ struct Node {
     int data;
     struct Node* next;
 };
+struct Node_Int {
+    int data;
+    struct Node_Int* next;
+};
+struct Node_Double{
+    double data;
+    struct Node_Double* next;
+};
+struct Node_Var {
+    char variable[VARIABLE_LEN];
+    struct Node_Var* next;
+}
+    struct Node_Operator {
+        char operator[1];
+        struct Node_Operator* next;
+
+    }
 struct DNode {
     int data;
     struct DNode* prev;
@@ -30,7 +47,20 @@ struct Node_Variable {
     int dtype;
     char data[VARIABLE_LEN];
     struct Node_Variable* next;
-    struct DType_Node* dtype_node;
+    union {
+        struct Node_Int* node_int;
+        double* doubleptr;
+        char* charptr;
+    }dtype_node;
+};
+struct Node_Op {
+    int dtype;
+    int* dim;
+    struct Node_Int* node_int;
+    struct Node_Double* node_double;
+    struct Node_Var* node_var;
+    struct Node_Operator* node_operator;
+    struct Node_Op* next;
 };
 struct DNode_Variable {
     char variable[VARIABLE_LEN];
@@ -40,8 +70,7 @@ struct DNode_Variable {
     struct Node_Char* next;
 };
 
-struct DType_Node {
-    int dtype;
+union Node_Data_Type{
     int* intptr;
     double* doubleptr;
     char* charptr;
