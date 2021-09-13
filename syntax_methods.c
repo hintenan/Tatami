@@ -350,7 +350,7 @@ int syntax_check (struct Node_Variable** cmd_ptoptr, char* cmd_text) {
 
 // define syntax check method
 // first read command line into simple codeable dialect
-int syntax_check_new (struct Node_Op* cmd_ptoptr, char* cmd_text) {
+int syntax_check_new (struct Node_Op** cmd_ptoptr, char* cmd_text) {
 
 
     // char segmentation
@@ -361,9 +361,9 @@ int syntax_check_new (struct Node_Op* cmd_ptoptr, char* cmd_text) {
     // char segmentation to structure
 
     // rearranged char Node
-    struct Node_Variable* tmp_ptr = NULL;
-    struct Node_Variable** tmp_ptoptr = &tmp_ptr;
-    struct Node_Variable* end = NULL;
+    struct Node_Op* tmp_ptr = NULL;
+    struct Node_Op** tmp_ptoptr = &tmp_ptr;
+    struct Node_Op* end = NULL;
     int is_operant = -1;
     // -1: init
     // 0: operator
@@ -388,6 +388,7 @@ int syntax_check_new (struct Node_Op* cmd_ptoptr, char* cmd_text) {
     struct Node** bracket_ptoptr = &bracket_ptr;
     int assignment = 0;
     int word_count = 0;
+    int data_type = 0;
     
 
     // Command text segmentation
@@ -434,6 +435,7 @@ int syntax_check_new (struct Node_Op* cmd_ptoptr, char* cmd_text) {
             // write
             variable_text[index_of_variable_text] = cmd_text[index_of_cmd_text];
             index_of_variable_text += 1;
+        /*
         } else if (cmd_text[index_of_cmd_text] == '=') {
             // asignment
             // processing "var = x" only by now
@@ -547,6 +549,7 @@ int syntax_check_new (struct Node_Op* cmd_ptoptr, char* cmd_text) {
             index_of_variable_text = 0;
             memset(variable_text, '\0', VARIABLE_LEN);
         //} else if (ispunct(cmd_text[index_of_cmd_text]) > 0) {
+        */
         } else if (cmd_text[index_of_cmd_text] == '.') {
             if (index_of_variable_text == 0) {
                 if (is_operant == -1) {
@@ -597,24 +600,24 @@ int syntax_check_new (struct Node_Op* cmd_ptoptr, char* cmd_text) {
                     is_operant = 0;
                     variable_text[0] = cmd_text[index_of_cmd_text];
                     variable_text[1] = '\0';
-                    end = add_end_of_Node_Variable(variable_text, tmp_ptoptr, end);
-                    end->dtype = 9;
+                    end = add_end_of_Node_Op(1001, tmp_ptoptr, end);
+                    end = add_data(variable_text, end);
                     index_of_variable_text = 0;
                     memset(variable_text, '\0', VARIABLE_LEN);
                     continue;
                 }
             }
 
-
             // write previous
             if (index_of_variable_text > 0) {
                 variable_text[index_of_variable_text + 1] = '\0';
-                end = add_end_of_Node_Variable(variable_text, tmp_ptoptr, end);
                 if (is_operant == 2) {
-                    end->dtype = 1;
+                    data_type = scan_dot(variable_text);
                 } else {
-                    end->dtype = 0;
+                    data_type = 100;
                 }
+                end = add_end_of_Node_Op(data_type, tmp_ptoptr, end);
+                end = add_data(variable_text, end);
                 index_of_variable_text = 0;
                 memset(variable_text, '\0', VARIABLE_LEN);
             }
@@ -622,19 +625,21 @@ int syntax_check_new (struct Node_Op* cmd_ptoptr, char* cmd_text) {
             is_operant = 0;
             variable_text[0] = cmd_text[index_of_cmd_text];
             variable_text[1] = '\0';
-            end = add_end_of_Node_Variable(variable_text, tmp_ptoptr, end);
-            end->dtype = 8;
+            end = add_end_of_Node_Op(1000, tmp_ptoptr, end);
+            end = add_data(variable_text, end);
             index_of_variable_text = 0;
             memset(variable_text, '\0', VARIABLE_LEN);
         } else if (cmd_text[index_of_cmd_text] == ' ') {
             if (index_of_variable_text > 0) {
                 variable_text[index_of_variable_text + 1] = '\0';
-                end = add_end_of_Node_Variable(variable_text, tmp_ptoptr, end);
+                //end = add_end_of_Node_Op(variable_text, tmp_ptoptr, end);
                 if (is_operant == 2) {
-                    end->dtype = 1;
+                    data_type = scan_dot(variable_text);
                 } else {
-                    end->dtype = 0;
+                    data_type = 100;
                 }
+                end = add_end_of_Node_Op(data_type, tmp_ptoptr, end);
+                end = add_data(variable_text, end);
                 index_of_variable_text = 0;
                 memset(variable_text, '\0', VARIABLE_LEN);
             }
@@ -645,20 +650,23 @@ int syntax_check_new (struct Node_Op* cmd_ptoptr, char* cmd_text) {
                 syntax_error_signal = 6;
             }
             // save last
-            if (index_of_variable_text) {
+            if (index_of_variable_text > 0) {
                 variable_text[index_of_variable_text + 1] = '\0';
-                end = add_end_of_Node_Variable(variable_text, tmp_ptoptr, end);
+                //end = add_end_of_Node_Op(variable_text, tmp_ptoptr, end);
                 if (is_operant == 2) {
-                    end->dtype = 1;
+                    data_type = scan_dot(variable_text);
                 } else {
-                    end->dtype = 0;
+                    data_type = 100;
                 }
+                end = add_end_of_Node_Op(data_type, tmp_ptoptr, end);
+                add_data(variable_text, end);
                 index_of_variable_text = 0;
                 memset(variable_text, '\0', VARIABLE_LEN);
             }
             break;
         } // end if isdifit / isalpha
     } //end of for
+    /*
     while (assignment) {
         variable_text[0] = ')';
         variable_text[1] = '\0';
@@ -666,7 +674,7 @@ int syntax_check_new (struct Node_Op* cmd_ptoptr, char* cmd_text) {
         memset(variable_text, '\0', VARIABLE_LEN);
         assignment -= 1;
     }
-    
+    */ 
     // Not empty bracket
     if (bracket_ptr != NULL) {
         syntax_error_signal = 1;
@@ -682,12 +690,23 @@ int syntax_check_new (struct Node_Op* cmd_ptoptr, char* cmd_text) {
         return 0;
     } else {
         printf("Command processing: ");
-        print_Node_Variable(tmp_ptoptr);
+        print_Node_Op(tmp_ptoptr);
         printf("\n");
     }
-
     *cmd_ptoptr = *tmp_ptoptr;
     empty_Node(bracket_ptoptr);
 
     return 1;
 } // end of syntax_check
+
+int scan_dot(char* text) {
+    // 1: int
+    // 10: double
+    for (int i = 0; i < VARIABLE_LEN; i++) {
+        if (text[i] == '\0') break;
+        if (text[i] == '.') {
+            return 10;
+        }
+    }
+    return 1;
+}

@@ -35,6 +35,41 @@ struct Node_Variable* add_end_of_Node_Variable(char* x, struct Node_Variable** p
     return endptr;
 }
 
+struct Node_Op* add_end_of_Node_Op(int data_type, struct Node_Op** ptr, struct Node_Op* endptr) {
+    struct Node_Op* last_node = malloc(sizeof(struct Node_Op));
+    last_node->dtype = data_type;
+    //formated_char_print(last_node->variable);
+    last_node->next = NULL;
+    if (*ptr == NULL) {
+        *ptr = last_node;
+        endptr = last_node;
+
+    } else {
+        endptr->next = last_node;
+        endptr = last_node;
+    }
+    return endptr;
+}
+
+struct Node_Op* add_data(char *text, struct Node_Op* endptr) {
+    
+    if (endptr->dtype == 1) {
+        struct Node_Int* data_node = malloc(sizeof(struct Node_Int));
+        data_node->data = atoi(text);
+        endptr->datap.node_int = data_node;
+    } else if (endptr-> dtype == 10) {
+        struct Node_Double* data_node = malloc(sizeof(struct Node_Double));
+        data_node->data = atof(text);
+        endptr->datap.node_double = data_node;
+    } else if (endptr-> dtype >= 1000) {
+        struct Node_Operator* data_node = malloc(sizeof(struct Node_Operator));
+        strcpy(data_node->operator, text);
+        endptr->datap.node_operator= data_node;
+    }
+    return endptr;
+
+}
+
 int top_Node(struct Node** headptr) {
     int data = 0;
     struct Node* tmp_node = *headptr;
@@ -184,3 +219,37 @@ void Print_tmp(char *text) {
         printf("\n");
 }
 
+void print_Node_Op (struct Node_Op** ptoptr) {
+    struct Node_Op* tmp_Node = *ptoptr;
+
+    while (tmp_Node != NULL) {
+        if (tmp_Node->dtype == 1) {
+            printf("%d ", tmp_Node->datap.node_int->data);
+        } else if (tmp_Node->dtype == 10) {
+            char output[VARIABLE_LEN];
+            snprintf(output, VARIABLE_LEN, "%f", tmp_Node->datap.node_double->data);
+            int i = 0;
+            for (i = 0; i < 10; i++) {
+                if (output[i] == '\0') break;
+            }
+            i -= 1;
+            for (; i > 0; i--) {
+                if (output[i] == '0') {
+                    output[i] = '\0';
+                } else {
+                    break;
+                }
+            }
+            printf("%s ", output);
+            //printf("%f ", tmp_Node->datap.node_double->data);
+        } else if (tmp_Node->dtype >= 100) {
+            for (int i = 0; tmp_Node->datap.node_operator->operator[i] != '\0'; i++) {
+                printf("%c", tmp_Node->datap.node_operator->operator[i]);
+            }
+            printf(" ");
+        }
+        tmp_Node = tmp_Node->next;
+    }
+
+
+}

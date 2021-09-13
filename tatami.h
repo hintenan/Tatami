@@ -31,12 +31,12 @@ struct Node_Double{
 struct Node_Var {
     char variable[VARIABLE_LEN];
     struct Node_Var* next;
-}
-    struct Node_Operator {
-        char operator[1];
-        struct Node_Operator* next;
+};
+struct Node_Operator {
+    char operator[1];
+    struct Node_Operator* next;
+};
 
-    }
 struct DNode {
     int data;
     struct DNode* prev;
@@ -56,10 +56,12 @@ struct Node_Variable {
 struct Node_Op {
     int dtype;
     int* dim;
-    struct Node_Int* node_int;
-    struct Node_Double* node_double;
-    struct Node_Var* node_var;
-    struct Node_Operator* node_operator;
+    union {
+        struct Node_Int* node_int;
+        struct Node_Double* node_double;
+        struct Node_Var* node_var;
+        struct Node_Operator* node_operator;
+    }datap;
     struct Node_Op* next;
 };
 struct DNode_Variable {
@@ -70,7 +72,7 @@ struct DNode_Variable {
     struct Node_Char* next;
 };
 
-union Node_Data_Type{
+union Node_Data_Type {
     int* intptr;
     double* doubleptr;
     char* charptr;
@@ -85,6 +87,8 @@ void Print_tmp(char *text);
 void add_Node(int data, struct Node** head_ptoptr);
 void add_Node_Variable(char* x, struct Node_Variable** head_ptoptr);
 struct Node_Variable* add_end_of_Node_Variable(char* x, struct Node_Variable** head_ptoptr, struct Node_Variable* end_ptr);
+struct Node_Op* add_end_of_Node_Op(int data_type, struct Node_Op** ptr, struct Node_Op* endptr);
+struct Node_Op* add_data(char *text, struct Node_Op* endptr);
 
 //Delete Node
 void remove_Node_Variable(struct Node_Variable** ptoptr);
@@ -107,12 +111,16 @@ void empty_Node_Variable(struct Node_Variable** head_ptoptr);
 void print_Node(struct Node** head_ptoptr);
 void print_Node_Variable(struct Node_Variable** head_ptoptr);
 void print_Variable_Data(struct Node_Variable** Variable_ptoptr);
+void print_Node_Op(struct Node_Op ** variable_ptoptr);
 
 // syntax check
 int close_bracket_check(char text, struct Node** head_ptoptr);
+int scan_dot(char* text);
 
 // infix, prefix and postfix
 int syntax_check(struct Node_Variable** cmd_ptoptr, char* text);
+int syntax_check_new(struct Node_Op** cmd_ptoptr, char* text);
+
 int replace_variable_with_data(struct Node_Variable** data_ptoptr, struct Node_Variable** ptotpr);
 
 void formated_char_print(char* text);
