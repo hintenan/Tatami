@@ -63,7 +63,7 @@ struct Node_Op* add_data(char *text, struct Node_Op* endptr) {
         endptr->datap.node_double = data_node;
     } else if (endptr-> dtype >= 1000) {
         struct Node_Operator* data_node = malloc(sizeof(struct Node_Operator));
-        strcpy(data_node->operator, text);
+        strcpy(data_node->opera, text);
         endptr->datap.node_operator= data_node;
     }
     return endptr;
@@ -242,11 +242,8 @@ void print_Node_Op (struct Node_Op** ptoptr) {
             }
             printf("%s ", output);
             //printf("%f ", tmp_Node->datap.node_double->data);
-        } else if (tmp_Node->dtype >= 100) {
-            for (int i = 0; tmp_Node->datap.node_operator->operator[i] != '\0'; i++) {
-                printf("%c", tmp_Node->datap.node_operator->operator[i]);
-            }
-            printf(" ");
+        } else if (tmp_Node->dtype >= 1000) {
+            printf("%s ", tmp_Node->datap.node_operator->opera);
         }
         tmp_Node = tmp_Node->next;
     }

@@ -33,7 +33,7 @@ struct Node_Var {
     struct Node_Var* next;
 };
 struct Node_Operator {
-    char operator[1];
+    char opera[3];
     struct Node_Operator* next;
 };
 

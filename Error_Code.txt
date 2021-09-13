@@ -1,0 +1,12 @@
+Error Code:
+int syntax_error_signal:
+    bracket error: 1
+    digit + alpha error: 2
+    operator operator error: 3
+    operant operant error: 4
+    operator starting error: 5
+    operator ending error: 6
+    function call error: 7
+    assignment error: 11
+    digits before assinment: 12
+    operation before assignment: 13
