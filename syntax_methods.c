@@ -407,6 +407,8 @@ int syntax_check_new (struct Node_Op** cmd_ptoptr, char* cmd_text) {
                 } else {
                     is_operant = 2;
                 }
+            } else if (is_operant == 0) {
+                is_operant = 2;
             }
 
             // write
@@ -472,6 +474,7 @@ int syntax_check_new (struct Node_Op** cmd_ptoptr, char* cmd_text) {
             end = add_end_of_Node_Variable(variable_text, tmp_ptoptr, end);
             index_of_variable_text = 0;
             memset(variable_text, '\0', VARIABLE_LEN);
+        */
         } else if (cmd_text[index_of_cmd_text] == '(') {
             add_Node(1, bracket_ptoptr);
 
@@ -499,21 +502,17 @@ int syntax_check_new (struct Node_Op** cmd_ptoptr, char* cmd_text) {
                 // write
                 if (index_of_variable_text > 0) {
                     variable_text[index_of_variable_text + 1] = '\0';
-                    end = add_end_of_Node_Variable(variable_text, tmp_ptoptr, end);
-                    if (is_operant == 2) {
-                        end->dtype = 1;
-                    } else {
-                        end->dtype = 0;
-                    }
-                        index_of_variable_text = 0;
-                        memset(variable_text, '\0', VARIABLE_LEN);
-                    }
+                    end = add_end_of_Node_Op(100, tmp_ptoptr, end);
+                    end = add_data(variable_text, end);
+                    index_of_variable_text = 0;
+                    memset(variable_text, '\0', VARIABLE_LEN);
                 }
+            }
             // write
             variable_text[0] = '(';
             variable_text[1] = '\0';
-            end = add_end_of_Node_Variable(variable_text, tmp_ptoptr, end);
-            end->dtype = 7;
+            end = add_end_of_Node_Op(1002, tmp_ptoptr, end);
+            end = add_data(variable_text, end);
             memset(variable_text, '\0', VARIABLE_LEN);
         } else if (cmd_text[index_of_cmd_text] == ')') {
             if (close_bracket_check(cmd_text[index_of_cmd_text], bracket_ptoptr)) {
@@ -532,44 +531,43 @@ int syntax_check_new (struct Node_Op** cmd_ptoptr, char* cmd_text) {
                 // is alphabet: (a)
                 if (index_of_variable_text > 0) {
                     variable_text[index_of_variable_text + 1] = '\0';
-                    end = add_end_of_Node_Variable(variable_text, tmp_ptoptr, end);
                     if (is_operant == 2) {
-                        end->dtype = 1;
+                        data_type = scan_dot(variable_text);
                     } else {
-                        end->dtype = 0;
+                        data_type = 100;
                     }
-                        index_of_variable_text = 0;
-                        memset(variable_text, '\0', VARIABLE_LEN);
-                    }
+                    end = add_end_of_Node_Op(data_type, tmp_ptoptr, end);
+                    end = add_data(variable_text, end);
+                    index_of_variable_text = 0;
+                    memset(variable_text, '\0', VARIABLE_LEN);
                 }
+            }
             variable_text[0] = ')';
             variable_text[1] = '\0';
-            end = add_end_of_Node_Variable(variable_text, tmp_ptoptr, end);
-            end->dtype = 7;
+            end = add_end_of_Node_Op(1002, tmp_ptoptr, end);
+            end = add_data(variable_text, end);
             index_of_variable_text = 0;
             memset(variable_text, '\0', VARIABLE_LEN);
-        //} else if (ispunct(cmd_text[index_of_cmd_text]) > 0) {
-        */
         } else if (cmd_text[index_of_cmd_text] == '.') {
             if (index_of_variable_text == 0) {
                 if (is_operant == -1) {
                     // legal
-                    is_operant = 2;
+                    is_operant = 0;
                 } else if (is_operant == 0) {
                     // legal
-                    is_operant = 2;
+                    is_operant = 0;
                 } else if (is_operant == 1) {
                     // can not handle by now...
-                    is_operant = 2;
+                    is_operant = 0;
                 } else if (is_operant >= 2) {
                     // op op error
                     syntax_error_signal = 3;
                     break;
                 }
-
-                // write
-                variable_text[index_of_variable_text] = '0';
-                index_of_variable_text += 1;
+            } else if (is_operant == 0) {
+                // op op error
+                syntax_error_signal = 3;
+                break;
             }
 
             // write
@@ -590,8 +588,10 @@ int syntax_check_new (struct Node_Op** cmd_ptoptr, char* cmd_text) {
             //} else { // is positive or negative
             } else if (cmd_text[index_of_cmd_text] == '+') {
                 if (is_operant == -1) {
+                    is_operant = 0;
                     continue;
                 } else if (is_operant == 0) {
+                    is_operant = 0;
                     continue;
                 }
             } else if (cmd_text[index_of_cmd_text] == '-') {
