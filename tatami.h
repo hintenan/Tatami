@@ -20,6 +20,11 @@ struct Node {
     int data;
     struct Node* next;
 };
+struct DNode {
+    int data;
+    struct DNode* prev;
+    struct DNode* next;
+};
 struct Node_Int {
     int data;
     struct Node_Int* next;
@@ -28,30 +33,28 @@ struct Node_Double{
     double data;
     struct Node_Double* next;
 };
+struct DNode_Double{
+    double data;
+    struct DNode_Double* prev;
+    struct DNode_Double* next;
+};
 struct Node_Var {
     char variable[VARIABLE_LEN];
+    int dtype;
+    union {
+        struct Node_Int* node_int;
+        struct Node_Double* node_double;
+        //struct Node_Var* node_var;
+    }datap;
     struct Node_Var* next;
 };
 struct Node_Operator {
     char opera[3];
     struct Node_Operator* next;
 };
-
-struct DNode {
-    int data;
-    struct DNode* prev;
-    struct DNode* next;
-};
-struct Node_Variable {
-    char variable[VARIABLE_LEN];
-    int dtype;
-    char data[VARIABLE_LEN];
-    struct Node_Variable* next;
-    union {
-        struct Node_Int* node_int;
-        double* doubleptr;
-        char* charptr;
-    }dtype_node;
+struct Node_Function {
+    char function[VARIABLE_LEN];
+    struct Node_Function* next;
 };
 struct Node_Op {
     int dtype;
@@ -60,72 +63,73 @@ struct Node_Op {
         struct Node_Int* node_int;
         struct Node_Double* node_double;
         struct Node_Var* node_var;
-        struct Node_Operator* node_operator;
+        struct Node_Function* node_function;
+        struct Node_Int* node_operator;
     }datap;
     struct Node_Op* next;
 };
-struct DNode_Variable {
-    char variable[VARIABLE_LEN];
-    char dtype[20];
-    struct Node_Int* data;
-    struct Node_Char* prev;
-    struct Node_Char* next;
-};
 
-union Node_Data_Type {
-    int* intptr;
-    double* doubleptr;
-    char* charptr;
-};
 
 // Declaration
 int tatami_prompt();
-// Print method
-void Print_tmp(char *text); 
 
 // Add Node
 void add_Node(int data, struct Node** head_ptoptr);
-void add_Node_Variable(char* x, struct Node_Variable** head_ptoptr);
-struct Node_Variable* add_end_of_Node_Variable(char* x, struct Node_Variable** head_ptoptr, struct Node_Variable* end_ptr);
+void add_DNode(int data, struct DNode** head_ptoptr);
+void add_DNode_Double(double data, struct DNode_Double** head_ptoptr);
+void add_Node_Var(char* x, struct Node_Var** head_ptoptr);
+void add_Var_data(int x, struct Node_Var* head_ptoptr);
 struct Node_Op* add_end_of_Node_Op(int data_type, struct Node_Op** ptr, struct Node_Op* endptr);
 struct Node_Op* add_data(char *text, struct Node_Op* endptr);
 
 //Delete Node
-void remove_Node_Variable(struct Node_Variable** ptoptr);
+void remove_Node_Var(struct Node_Var** ptoptr);
+void remove_Node_Op(struct Node_Op** ptoptr);
 
 //Top Node
 int top_Node(struct Node** head_ptoptr);
-char* top_Node_Variable(char* text, struct Node_Variable** head_ptoptr);
+int top_DNode(struct DNode** head_ptoptr);
+double top_DNode_Double(struct DNode_Double** head_ptoptr);
 
-// move Node
-void move_Node_Variable(struct Node_Variable** ptoptr, struct Node_Variable** head);
-void move_end_of_Node_Variable(struct Node_Variable** ptoptr, struct Node_Variable** head, struct Node_Variable** end);
+// Move Node
+void move_Node_Op(struct Node_Op** ptoptr, struct Node_Op** head);
+void move_end_of_Node_Op(struct Node_Op** ptoptr, struct Node_Op** head, struct Node_Op** end);
+
 // Reverse Node methods
-void reverse_Node_Varialbe(struct Node_Variable** head_ptoptr);
 
 // Empty Node
 void empty_Node(struct Node** head_ptoptr);
-void empty_Node_Variable(struct Node_Variable** head_ptoptr);
+void empty_DNode(struct DNode** head_ptoptr);
+void empty_DNode_Double(struct DNode_Double** head_ptoptr);
+void empty_Node_Op(struct Node_Op** head_ptoptr);
+void empty_Node_Var(struct Node_Var** head_ptoptr);
 
 // Print Node Methods
 void print_Node(struct Node** head_ptoptr);
-void print_Node_Variable(struct Node_Variable** head_ptoptr);
-void print_Variable_Data(struct Node_Variable** Variable_ptoptr);
-void print_Node_Op(struct Node_Op ** variable_ptoptr);
+void print_DNode(struct DNode** head_ptoptr);
+void print_DNode_Double(struct DNode_Double** head_ptoptr);
+void print_DNode_Results(struct DNode** post_ptr);
+void print_DNode_Double_Results(struct DNode_Double** post_ptr);
+
+void print_Node_Op(struct Node_Op ** Op_ptoptr);
+void print_Node_Op_dtype(struct Node_Op ** Op_ptoptr);
+
+// Print method
+void Print_tmp(char *text); 
+
 
 // syntax check
+int syntax_check(struct Node_Op** cmd_ptoptr, char* text);
 int close_bracket_check(char text, struct Node** head_ptoptr);
-int scan_dot(char* text);
+
 
 // infix, prefix and postfix
-int syntax_check(struct Node_Variable** cmd_ptoptr, char* text);
-int syntax_check_new(struct Node_Op** cmd_ptoptr, char* text);
-
-int replace_variable_with_data(struct Node_Variable** data_ptoptr, struct Node_Variable** ptotpr);
+int replace_variable_with_data(struct Node_Var** variable_pool_ptoptr, struct Node_Op** ptotpr);
 
 void formated_char_print(char* text);
 int alpha_check(int index, char* text);
 void identify_punct();
-void in_to_postfix(struct Node_Variable** head_ptoptr);
-void evaluate_postfix(struct Node_Variable** data_ptoptr, struct Node_Variable** head_ptoptr);
-
+int in_to_postfix(struct Node_Op** head_ptoptr);
+void evaluate_postfix(int is_double, struct Node_Var** data_pool_ptoptr, struct Node_Op** head_ptoptr);
+void evaluate_postfix_d(int is_double, struct Node_Var** data_pool_ptoptr, struct Node_Op** head_ptoptr);
+int scan_dot(char* text);
