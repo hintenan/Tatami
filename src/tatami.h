@@ -6,7 +6,7 @@
 
 #ifndef PROMPT
 #define PROMPT "//> "
-#define INPUT_X = 5
+#define PROMPT_X = 5
 #endif
 
 #ifndef VARIABLE_LEN
@@ -25,10 +25,9 @@ struct Int_Node {
 
 struct Comm_Node {
     int dtype;
-    int* dim;
     union {
-        struct Int_Node* node_operator;
-        struct Node_Var* node_var;
+        struct Int_Node* op_num;
+        struct Var_Node* node_var;
         struct Node_Function* node_function;
         struct Node_Int* node_int;
         struct Node_Double* node_double;
@@ -36,10 +35,11 @@ struct Comm_Node {
     struct Comm_Node* next;
 };
 
-struct Node {
-    int data;
-    struct Node* next;
-};
+// Add Node
+void Add_Int_Node(int data, struct Node** head_ptoptr);
+void Add_Comm_Node(int data, struct Node** head_ptoptr);
+
+/*
 struct DNode {
     int data;
     struct DNode* prev;
@@ -53,10 +53,6 @@ struct Node_Input {
     struct Node_Input* next;
 };
 
-struct Node_Int {
-    int data;
-    struct Node_Int* next;
-};
 struct Node_Double{
     double data;
     struct Node_Double* next;
@@ -189,3 +185,4 @@ int scan_dot(char* text);
 
 struct timespec diff(struct timespec start, struct timespec end);
 int load_module(struct Node_Var** pool_ptoptr, struct Node_Input** ptoptr);
+*/
