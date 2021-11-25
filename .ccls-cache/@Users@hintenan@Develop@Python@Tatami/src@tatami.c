@@ -9,8 +9,7 @@
 // main program
 // execut input code or process line by line
 
-int diff_time(struct timespec start, struct timespec end);
-
+int print_diff_time(struct timespec start, struct timespec end);
 int main(int argc, char *argv[]) {
     
     // Parse argument
@@ -44,8 +43,10 @@ int tatami_prompt() {
     int index_of_comm_text = 0;
     int _not_exit_loop_ = 1;
 
-    /*
     struct timespec start, end;
+    int timer = -1;
+
+    /*
     struct Node_Input* cmd_ptr = NULL;
     struct Node_Input** cmd_ptoptr = &cmd_ptr;
 
@@ -56,15 +57,18 @@ int tatami_prompt() {
         // Print a promtp
         printf(PROMPT);
         // Read all command text
+        index_of_comm_text = 0;
         while (1) {
             comm_text[index_of_comm_text] = getchar();
             if (comm_text[index_of_comm_text] == 10) break;
             index_of_comm_text += 1;
         }
-        comm_text[index_of_comm_text + 1] = '\0';
         if (index_of_comm_text) {
+            timer = clock_gettime(CLOCK_REALTIME, &start);
+            comm_text[index_of_comm_text + 1] = '\0';
             printf("%s", comm_text);
-            index_of_comm_text = 0;
+            clock_gettime(CLOCK_REALTIME, &end);
+            print_diff_time(start, end);
         }
 
     }
