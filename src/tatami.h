@@ -23,21 +23,23 @@ struct Int_Node {
     struct Int_Node* next;
 };
 
+struct DNode {
+    int data;
+    struct DNode* prev;
+    struct DNode* next;
+};
+
 struct Comm_Node {
     int dtype;
-    union {
-        struct Int_Node* op_num;
-        struct Var_Node* node_var;
-        struct Node_Function* node_function;
-        struct Node_Int* node_int;
-        struct Node_Double* node_double;
-    }datap;
+    char text[VARIABLE_LEN];
     struct Comm_Node* next;
 };
 
 // Add Node
-void Add_Int_Node(int data, struct Node** head_ptoptr);
-void Add_Comm_Node(int data, struct Node** head_ptoptr);
+void add_Int_Node(int data, struct Comm_Node** head_ptoptr);
+void add_DNode(int data, struct DNode** head_ptoptr);
+void add_Comm_Node(int data, struct Comm_Node** head_ptoptr);
+void add_Comm_Node_Text(char *text, struct Comm_Node** head_ptoptr);
 
 /*
 struct DNode {

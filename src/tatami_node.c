@@ -6,83 +6,33 @@
 # include "tatami.h"
 
 // Add Node
-void add_Node(int x, struct Node** pptr) {
-    struct Node* first_node = malloc(sizeof(struct Node));
+void add_Int_Node(int x, struct Int_Node** pptr) {
+    struct Int_Node* first_node = malloc(sizeof(struct Int_Node));
     first_node->data = x;
     first_node->next = *pptr;
     *pptr = first_node;
 }
 
 void add_DNode(int x, struct DNode** pptr) {
-    struct DNode* tmp_Node = *pptr;
     struct DNode* first_node = malloc(sizeof(struct DNode));
-    
     first_node->data = x;
-    first_node->prev = NULL;
     first_node->next = *pptr;
-    if (tmp_Node == NULL) {
-        *pptr = first_node;
-    } else {
-        tmp_Node->prev = first_node;
-        *pptr = first_node;
+    if (first_node->next != NULL) {
+        first_node->next->prev = first_node;
     }
+    *pptr = first_node;
 }
 
-struct Node_Input* add_end_of_Node_Input(int data_type, struct Node_Input** ptr, struct Node_Input* endptr) {
-    struct Node_Input* last_node = malloc(sizeof(struct Node_Input));
-    last_node->dtype = data_type;
-    //formated_char_print(last_node->variable);
-    last_node->next = NULL;
-    if (*ptr == NULL) {
-        *ptr = last_node;
-        endptr = last_node;
-
-    } else {
-        endptr->next = last_node;
-        endptr = last_node;
-    }
-    return endptr;
-}
-
-
-
-void add_DNode_Double(double x, struct DNode_Double** pptr) {
-    struct DNode_Double* tmp_Node = *pptr;
-    struct DNode_Double* first_node = malloc(sizeof(struct DNode_Double));
-    
-    first_node->data = x;
-    first_node->prev = NULL;
+void add_Comm_Node(int x, struct Comm_Node** pptr) {
+    struct Comm_Node* first_node = malloc(sizeof(struct Comm_Node));
+    first_node->dtype = x;
     first_node->next = *pptr;
-    if (tmp_Node == NULL) {
-        *pptr = first_node;
-    } else {
-        tmp_Node->prev = first_node;
-        *pptr = first_node;
-    }
+    *pptr = first_node;
 }
 
-void add_Node_Var(char* x, struct Node_Var** pptr) {
-    struct Node_Var* first_node = malloc(sizeof(struct Node_Var));
-    strcpy(first_node->variable, x);
-    first_node->next = *pptr;
-    *pptr = first_node;   
-}
-void add_Node_Var_data(struct Node_Input* data_node, struct Node_Var* var_node) {
-    var_node->dtype = data_node->dtype;
-    strcpy(var_node->text, data_node->text);
-    if (var_node->dtype > 500) {
-        var_node->datap.node_double = atof(data_node->text);
-    } else if (var_node->dtype > 400) {
-        var_node->datap.node_int = atoi(data_node->text);
-    }
-}
-
-void add_Node_Class(char* var_text, struct Node_Class** head_ptoptr) {
-    struct Node_Class* first_node = malloc(sizeof(struct Node_Class));
-    strcpy(first_node->variable, var_text);
-    first_node->next = *head_ptoptr;
-    *head_ptoptr = first_node;   
-
+void add_Comm_Node_Text(char *text, struct Comm_Node** ptoptr) {
+    struct Comm_Node* first_node = *ptoptr;
+    strcpy(first_node->text, text);
 }
 
 /*

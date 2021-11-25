@@ -3,7 +3,7 @@
 
 // define syntax check method
 // first read command line into simple codeable dialect
-int syntax_analysis (struct Node_Input** cmd_ptoptr, char* cmd_text) {
+int syntax_analysis (struct Comm_Node** cmd_ptoptr, char* cmd_text) {
 
     // char segmentation
     char variable_text[VARIABLE_LEN];
@@ -13,11 +13,8 @@ int syntax_analysis (struct Node_Input** cmd_ptoptr, char* cmd_text) {
     // char segmentation to structure
 
     // rearranged char Node
-    struct Node_Input* prev = NULL;
-    struct Node_Input* end = NULL;
-    end = add_end_of_Node_Input(-1, cmd_ptoptr, end);
+    struct Comm_Node* comm_node = comm_ptoptr;
     int is_operant = -1;
-    int iter = 0;
     // 0: init
     // 1: operator
     // 101: digital
@@ -49,7 +46,7 @@ int syntax_analysis (struct Node_Input** cmd_ptoptr, char* cmd_text) {
     //int index_of_command_text = 0;
     // Command text segmentation
     // isescape --> isspace --> ispunct --> isdigit --> isalpha 
-    for (index_of_cmd_text = 0; index_of_cmd_text < VARIABLE_LEN; index_of_cmd_text++) {
+    for (index_of_cmd_text = 0; cmd_text[index_of_cmd_text] != '\0'; index_of_cmd_text++) {
         
         // operant or operator
         switch (cmd_text[index_of_cmd_text]) {
