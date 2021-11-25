@@ -35,10 +35,12 @@ struct Comm_Node {
     struct Comm_Node* next;
 };
 
+// function
+int tatami_prompt();
 // Add Node
 void add_Int_Node(int data, struct Comm_Node** head_ptoptr);
 void add_DNode(int data, struct DNode** head_ptoptr);
-void add_Comm_Node(int data, struct Comm_Node** head_ptoptr);
+void add_Comm_Node(int dtype, struct Comm_Node** head_ptoptr);
 void add_Comm_Node_Text(char *text, struct Comm_Node** head_ptoptr);
 
 /*

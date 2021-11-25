@@ -40,6 +40,7 @@ int main(int argc, char *argv[]) {
 
 int tatami_prompt() {
     char comm_text[VARIABLE_LEN];
+    memset(comm_text, '\0', VARIABLE_LEN);
     int index_of_comm_text = 0;
     int _not_exit_loop_ = 1;
 
@@ -71,6 +72,8 @@ int tatami_prompt() {
             print_diff_time(start, end);
         }
 
+
+    memset(comm_text, '\0', VARIABLE_LEN);
     }
     return 1;
 }

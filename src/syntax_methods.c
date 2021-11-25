@@ -13,7 +13,8 @@ int syntax_analysis (struct Comm_Node** cmd_ptoptr, char* cmd_text) {
     // char segmentation to structure
 
     // rearranged char Node
-    struct Comm_Node* comm_node = comm_ptoptr;
+    struct Comm_Node* comm_node = *cmd_ptoptr;
+    int iter = 0;
     int is_operant = -1;
     // 0: init
     // 1: operator
@@ -50,18 +51,18 @@ int syntax_analysis (struct Comm_Node** cmd_ptoptr, char* cmd_text) {
         
         // operant or operator
         switch (cmd_text[index_of_cmd_text]) {
-            
             case 48: case 49: case 50: case 51: case 52: case 53: case 54: case 55: case 56: case 57:
-            {// isdigit: 1234567890
-                // init: define type: 2
-                if (index_of_variable_text == 0) {
-                    // signal 4: operant operant error
-                    // or 101
-                    if (is_operant > 200) {
-                        syntax_error_signal = 4;
-                        break;
-                    }
-                    is_operant = 401;
+                {
+                    // isdigit: 1234567890
+                    // init: define type: 2
+                    if (index_of_variable_text == 0) {
+                        // signal 4: operant operant error
+                        // or 101
+                        if (is_operant > 1001) {
+                            syntax_error_signal = 4;
+                            goto syntax_error;
+                        }
+                        is_operant = 401;
 
                     // for assignment debugging 
                     // delete this?????
@@ -80,7 +81,7 @@ int syntax_analysis (struct Comm_Node** cmd_ptoptr, char* cmd_text) {
 
                 // write
                 for (iter = index_of_cmd_text; isdigit(cmd_text[iter]); iter++) {
-                    end->text[index_of_variable_text] = cmd_text[iter];
+                    variable_text[index_of_variable_text] = cmd_text[iter];
                     index_of_variable_text += 1;
                 }
                 index_of_cmd_text = iter - 1;
