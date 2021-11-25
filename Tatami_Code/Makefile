@@ -1,21 +1,5 @@
 CC = gcc
 EXE = tatami
-<<<<<<< Updated upstream
-SUBDIR = src
-SRC_OBJ = tatami.o 
-OBJECT =
-CFALGS = -Wall -O
-
-tatami: tatami.o 
-	$(CC) $(CFLAGS) -o $(EXE) $(SRC_OBJ)
-
-tatami.o : $(SUBDIR)/tatami.c
-
-	$(CC) $(CFLAGS) -c $(SUBDIR)/tatami.c -o tatami.o
-tatami_node.o : $(SUBDIR)/tatami_node.c
-	$(CC) $(CFLAGS) -c $(SUBDIR)/tatami_node.c -o tatami_node.o
-
-=======
 SOURCE_PATH = Tatami_Code
 OBJECT = tatami.o tatami_node.o syntax_methods.o syntax_trans.o var_fun.o load_module.o
 CFLAGS = -Wall -O 
@@ -40,4 +24,3 @@ load_module.o: load_module.c
 
 clean:
 	rm *.o
->>>>>>> Stashed changes

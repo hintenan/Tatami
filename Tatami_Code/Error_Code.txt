@@ -1,0 +1,52 @@
+Error Code:
+
+int syntax_error_signal:
+    bracket error: 1
+    digit + alpha error: 2
+    operator operator error: 3
+    operant operant error: 4
+    operator starting error: 5
+    operator ending error: 6
+    function call error: 7
+    assignment error: 11
+    digits before assinment: 12
+    operation before assignment: 13
+
+data_type:
+dtype:
+    int = 1;
+    double = 10;
+    variable = 100;
+    function = 500;
+    assigment (=) = 999;
+    arithmatic oprator (+, -, * and /) = 1000;
+    negative sign = 1001;
+    parentheses (()) = 1002;
+
+NEW data_type:
+dtype:
+    init = 0;
+    * = 1;
+    / = 2;
+    + = 11;
+    - = 12;
+    negative = 13;
+    
+    parentheses ( = 21;
+    parentheses ) = 24;
+    parentheses of function ( = 31;
+    parentheses of function ) = 34;
+    
+    assigmen (=) = 99;
+    ##############
+    dependent operator
+    . = 101;
+
+    ##############
+    variable = 201;
+    function = 301;
+    
+    int = 401;
+    double = 501;
+    
+    
