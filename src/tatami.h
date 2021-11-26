@@ -16,6 +16,12 @@
 #ifndef BUFFER_SIZE
 #define BUFFER_SIZE 256
 #endif
+#define TA_OPERANT 1000
+#define TA_VAR 1001
+#define TA_FUNC 2001
+#define TA_NUMBER 3001
+#define TA_INT 3001
+#define TA_FLOAT 4001
 
 // Basic node
 struct Int_Node {
