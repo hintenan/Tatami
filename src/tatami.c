@@ -47,10 +47,10 @@ int tatami_prompt() {
     struct timespec start, end;
     int timer = -1;
 
-    /*
-    struct Node_Input* cmd_ptr = NULL;
-    struct Node_Input** cmd_ptoptr = &cmd_ptr;
+    struct Comm_Node* cmd_ptr = NULL;
+    struct Comm_Node** cmd_ptoptr = &cmd_ptr;
 
+    /*
     struct Node_Var* var_pool_ptr = NULL;
     struct Node_Var** var_pool_ptoptr = &var_pool_ptr;
     */
@@ -67,7 +67,9 @@ int tatami_prompt() {
         if (index_of_comm_text) {
             timer = clock_gettime(CLOCK_REALTIME, &start);
             comm_text[index_of_comm_text + 1] = '\0';
-            printf("%s", comm_text);
+            //printf("%s", comm_text);
+            syntax_analysis(comm_text, cmd_ptoptr);
+
             clock_gettime(CLOCK_REALTIME, &end);
             print_diff_time(start, end);
         }

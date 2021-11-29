@@ -34,6 +34,29 @@ void add_Comm_Node_Text(char *text, struct Comm_Node** ptoptr) {
     struct Comm_Node* first_node = *ptoptr;
     strcpy(first_node->text, text);
 }
+void print_Comm_Node(struct Comm_Node** ptoptr) {
+    struct Comm_Node* ptr = *ptoptr;
+    if (ptr != NULL) {
+        while (ptr != NULL) {
+            printf("%d: %s; ", ptr->dtype, ptr->text);
+            ptr = ptr->next;
+        }
+        printf("\n");
+    }
+}
+void empty_Comm_Node(struct Comm_Node** ptoptr) {
+    struct Comm_Node *ptr = *ptoptr;
+    if (ptr != NULL) {
+        *ptoptr = ptr->next;
+        while (*ptoptr != NULL) {
+            free(ptr);
+            ptr = *ptoptr;
+            *ptoptr = ptr->next;
+        }
+        free(ptr);
+    }
+}
+
 
 /*
 struct Node_Op* add_end_of_Node_Op(int data_type, struct Node_Op** ptr, struct Node_Op* endptr) {
@@ -89,7 +112,6 @@ struct Node_Op* add_punct(int punct, struct Node_Op* endptr) {
 
     return endptr;
 }
-*/
 
 // Delete Node
 void remove_Node_Var(struct Node_Var** ptoptr) {
@@ -145,7 +167,6 @@ double top_DNode_Double(struct DNode_Double** headptr) {
 
 // Move Node
 // move_Node_Op(ptoptr -> head_ptoptr)
-/*
 void move_Node_Op(struct Node_Op** ptoptr, struct Node_Op** head_ptoptr) {
     struct Node_Op* tmp_Node = *ptoptr;
     *ptoptr = tmp_Node->next;
@@ -167,7 +188,6 @@ void move_end_of_Node_Op(struct Node_Op** ptoptr, struct Node_Op** head_ptoptr, 
         tmp_Node->next = NULL;
     }
 }
-*/
 
 // Reverse Node methods
 
@@ -339,7 +359,6 @@ void print_DNode_Double_Results(struct DNode_Double** post_ptr) {
     }
 }
 
-/*
 void print_Node_Op (struct Node_Op** ptoptr) {
     struct Node_Op* tmp_Node = *ptoptr;
 
@@ -386,7 +405,6 @@ void print_Node_Op_dtype(struct Node_Op** ptoptr) {
         tmp_Node = tmp_Node->next;
     }
 }
-*/
 
 // Print method
 void Print_tmp(char *text) {
@@ -401,3 +419,4 @@ void Print_tmp(char *text) {
         }
         printf("\n");
 }
+*/

@@ -16,10 +16,16 @@
 #ifndef BUFFER_SIZE
 #define BUFFER_SIZE 256
 #endif
+#define TA_MULTIPLY 42
+#define TA_ADD 43 
+#define TA_SUBTRACT 45 
+#define TA_DIVIDE 47
+#define TA_POSITIVE_SIGN 243
+#define TA_NEGATIVE_SIGN 245
 #define TA_OPERANT 1000
 #define TA_VAR 1001
 #define TA_FUNC 2001
-#define TA_NUMBER 3001
+#define TA_NUMBER 3000
 #define TA_INT 3001
 #define TA_FLOAT 4001
 
@@ -43,11 +49,14 @@ struct Comm_Node {
 
 // function
 int tatami_prompt();
+int syntax_analysis(char *text, struct Comm_Node **ptoptr);
 // Add Node
-void add_Int_Node(int data, struct Comm_Node** head_ptoptr);
+void add_Int_Node(int data, struct Int_Node** head_ptoptr);
 void add_DNode(int data, struct DNode** head_ptoptr);
 void add_Comm_Node(int dtype, struct Comm_Node** head_ptoptr);
 void add_Comm_Node_Text(char *text, struct Comm_Node** head_ptoptr);
+void print_Comm_Node(struct Comm_Node** head_ptoptr);
+void empty_Comm_Node(struct Comm_Node** head_ptoptr);
 
 /*
 struct DNode {
